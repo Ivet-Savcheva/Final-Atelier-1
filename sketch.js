@@ -53,7 +53,7 @@ Controls:
 let cam;                // PhoneCamera instance
 let faceMesh;           // ML5 FaceMesh model
 let faces = [];         // Detected faces
-let showVideo = true;   // Toggle video display
+let showVideo = false;   // Toggle video display
 let showData = true;    // Toggle measurement visualization (lines, arcs, text)
 
 // Two-variable method: Define which points to track and store their data
@@ -84,9 +84,11 @@ let angle5_0 = 0;     // Angle of nose and imaginare center point
 let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 
 let crtTVModel;
+let crtTVImage;
 
 function preload() {
     crtTVModel = loadModel('kurty.obj', true);
+    crtTVImage = loadImage('morningglory.jpg');
 }
 
 // ==============================================
@@ -392,15 +394,23 @@ function drawUI() {
     noStroke();
     specularMaterial(50);
     shininess(100);
-    rotateX(-PI/1.8 - rotX);
-    rotateY(-PI/2 + rotY);
+    rotateX(-PI / 1.8 - rotX);
+    rotateY(-PI / 2 + rotY);
     rotateZ(rotZ);
+    scale(1.5);
     model(crtTVModel);
+
+    texture(crtTVImage);
+
+    rotateZ(-2 * PI / 180);
+    rotateY(PI / 2);
+    translate(0, 4, -63); // Position the sprite
+    plane(160, 130); // Width and height of the sprite
   }
   
   // Instructions at bottom
-  textSize(14);
-  text('Tap screen to toggle video', width/2, height - 40);
+  //textSize(14);
+  //text('Tap screen to toggle video', width/2, height - 40);
   pop();
 }
 
@@ -408,5 +418,5 @@ function drawUI() {
 // INTERACTION - Toggle video on touch
 // ==============================================
 function mousePressed() {
-  showVideo = !showVideo;
+  //showVideo = !showVideo;
 }
