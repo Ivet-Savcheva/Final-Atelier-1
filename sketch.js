@@ -382,8 +382,8 @@ function drawUI() {
     angleLon = angle5_0 * PI/180;
    
     // Convert polar coordinates to rotation angles
-    let rotX = sin(angleLat) * PI;
-    let rotY = cos(angleLon) * PI;
+    let rotY = -sin(angleLat) * PI;
+    let rotX = cos(angleLon) * PI;
     let rotZ = atan2(sin(angleLon), cos(angleLat));
 
     // This adds color to the model according to the angle of the surface
@@ -392,7 +392,7 @@ function drawUI() {
     noStroke();
     specularMaterial(50);
     shininess(100);
-    rotateX(PI + rotX);
+    rotateX(-PI/1.8 - rotX);
     rotateY(-PI/2 + rotY);
     rotateZ(rotZ);
     model(crtTVModel);
