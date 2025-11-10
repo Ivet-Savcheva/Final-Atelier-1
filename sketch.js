@@ -54,7 +54,7 @@ let cam;                // PhoneCamera instance
 let faceMesh;           // ML5 FaceMesh model
 let faces = [];         // Detected faces
 let showVideo = false;   // Toggle video display
-let showData = true;    // Toggle measurement visualization (lines, arcs, text)
+let showData = false;    // Toggle measurement visualization (lines, arcs, text)
 
 // Two-variable method: Define which points to track and store their data
 let facePointData0 = { x: 0, y: 0 };  // Center reference point
@@ -85,10 +85,17 @@ let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 
 let crtTVModel;
 let crtTVImage;
+let pg;
 
 function preload() {
-    crtTVModel = loadModel('kurty.obj', true);
-    crtTVImage = loadImage('morningglory.jpg');
+  crtTVModel = loadModel('kurty.obj', true);
+  crtTVImage = loadImage('morningglory.jpg');
+
+  pg = createGraphics(400, 400); // 2D graphics buffer
+  pg.textSize(32);
+  pg.fill(0); // Black color
+  pg.textAlign(CENTER, CENTER);
+  pg.text("Hello, WebGL!", pg.width / 2, pg.height / 2);
 }
 
 // ==============================================
@@ -151,7 +158,7 @@ function draw() {
     distance3_4 = measureDistance(facePointData3, facePointData4);
     angle3_4 = measureAngle(facePointData3, facePointData4);
     angle5_0 = measureAngle(facePointData5, facePointData0);
-    velocity5 = measureVelocity(facePointData5, facePointData5Prev);
+    //velocity5 = measureVelocity(facePointData5, facePointData5Prev);
     
     // Eyes: Check if both points are valid and display
     if (facePointData1 && facePointData2) {
@@ -362,12 +369,9 @@ function isValidPoint(point) {
 // UI - Display status and instructions
 // ==============================================
 function drawUI() {
+  background(220, 173, 237);
+
   push();
-  fill(255);
-  stroke(0);
-  strokeWeight(3);
-  textAlign(CENTER, TOP);
-  textSize(16);
   
   // Show status at top of screen
   if (!cam.ready) {
@@ -411,6 +415,12 @@ function drawUI() {
   // Instructions at bottom
   //textSize(14);
   //text('Tap screen to toggle video', width/2, height - 40);
+
+  texture(pg); // Use the 2D graphics as a texture
+  rotateX(PI);
+  translate(0, 150, 0); // Move the plane forward
+  plane(400, 400); // Draw a plane with the text texture
+  
   pop();
 }
 
