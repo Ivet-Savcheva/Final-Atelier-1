@@ -84,18 +84,65 @@ let angle5_0 = 0;     // Angle of nose and imaginare center point
 let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 
 let crtTVModel;
-let crtTVImage;
-let pg;
+let crtTVIndex = 0;
+let crtTVImages = [];
+let pgClosed;
+let pgOpen;
+let pgStarting;   // added graphic for "Starting camera..."
+let pgShowFace;   // added graphic for "Show your face to start tracking"
+
+let mouthOpen = false;
+let mouthClose = false;
+let mouthOpenTime = 0;
+let mouthCloseTime = 0;
 
 function preload() {
   crtTVModel = loadModel('kurty.obj', true);
-  crtTVImage = loadImage('morningglory.jpg');
+  
+  // Load array of flower images
+  crtTVImages.push(loadImage('daffodil.jpg'));
+  crtTVImages.push(loadImage('daisy.jpg'));
+  crtTVImages.push(loadImage('forgetmenot.jpg'));
+  crtTVImages.push(loadImage('hibiscus.jpg'));
+  crtTVImages.push(loadImage('iris.jpg'));
+  crtTVImages.push(loadImage('jasmine.jpg'));
+  crtTVImages.push(loadImage('lavander.jpg'));
+  crtTVImages.push(loadImage('lilyofthevalley.jpg'));
+  crtTVImages.push(loadImage('lotus.jpg'));
+  crtTVImages.push(loadImage('morningglory.jpg'));
+  crtTVImages.push(loadImage('orchid.jpg'));
+  crtTVImages.push(loadImage('peony.jpg'));
+  crtTVImages.push(loadImage('poppy.jpg'));
+  crtTVImages.push(loadImage('rose.jpg'));
+  crtTVImages.push(loadImage('sunflower.jpg'));
+  crtTVImages.push(loadImage('tulip.jpg'));
+  crtTVImages.push(loadImage('violet.jpg'));
+  crtTVImages.push(loadImage('wisteria.jpg'));
 
-  pg = createGraphics(400, 400); // 2D graphics buffer
-  pg.textSize(32);
-  pg.fill(0); // Black color
-  pg.textAlign(CENTER, CENTER);
-  pg.text("Hello, WebGL!", pg.width / 2, pg.height / 2);
+  pgOpen = createGraphics(400, 400); // 2D graphics buffer
+  pgOpen.textSize(26);
+  pgOpen.fill(0x56, 0x36, 0x5C); // Lilac shadow
+  pgOpen.textAlign(CENTER, CENTER);
+  pgOpen.text("Mouth opened", pgOpen.width / 2, pgOpen.height / 2);
+
+  pgClosed = createGraphics(400, 400); // 2D graphics buffer
+  pgClosed.textSize(26);
+  pgClosed.fill(0x56, 0x36, 0x5C); // Lilac shadow
+  pgClosed.textAlign(CENTER, CENTER);
+  pgClosed.text("Mouth closed", pgClosed.width / 2, pgClosed.height / 2);
+
+  // New graphics for status texts
+  pgStarting = createGraphics(400, 400);
+  pgStarting.textSize(26);
+  pgStarting.fill(0x56, 0x36, 0x5C);
+  pgStarting.textAlign(CENTER, CENTER);
+  pgStarting.text("Starting camera...", pgStarting.width / 2, pgStarting.height / 2);
+
+  pgShowFace = createGraphics(400, 400);
+  pgShowFace.textSize(22);
+  pgShowFace.fill(0x56, 0x36, 0x5C);
+  pgShowFace.textAlign(CENTER, CENTER);
+  pgShowFace.text("Show your face to start tracking", pgShowFace.width / 2, pgShowFace.height / 2);
 }
 
 // ==============================================
@@ -372,14 +419,36 @@ function drawUI() {
   background(220, 173, 237);
 
   push();
+
+  let pg;
   
   // Show status at top of screen
   if (!cam.ready) {
-    text('Starting camera...', width/2, 20);
+    pg = pgStarting;
+    rotateZ(PI);
+    rotateY(PI);
   } else if (faces.length === 0) {
-    text('Show your face to start tracking', width/2, 20);
+    pg = pgShowFace;
+    rotateZ(PI);
+    rotateY(PI);
   } else {
-    text('Tracking 5 face points', width/2, 20);
+    let nowTime = millis();
+    if (distance3_4 > 2) {
+      mouthOpen = true;
+      mouthOpenTime = nowTime;
+      if (mouthClose && (nowTime - mouthCloseTime) > 100) {
+        mouthClose = false;
+        crtTVIndex = floor(random(crtTVImages.length));
+      }
+      pg = pgOpen;
+    } else {
+      mouthClose = true;
+      mouthCloseTime = nowTime;
+      if (mouthOpen && (nowTime - mouthOpenTime) > 100) {
+        mouthOpen = false;
+      }
+      pg = pgClosed;
+    }
 
     // Click and drag to look around the shape
     orbitControl();
@@ -404,7 +473,7 @@ function drawUI() {
     scale(1.5);
     model(crtTVModel);
 
-    texture(crtTVImage);
+    texture(crtTVImages[crtTVIndex]);
 
     rotateZ(-2 * PI / 180);
     rotateY(PI / 2);
