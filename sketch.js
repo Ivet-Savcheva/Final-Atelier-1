@@ -86,6 +86,8 @@ let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 let crtTVModel;
 let crtTVIndex = 0;
 let crtTVImages = [];
+let crtTVNames = [];  // New array for flower names and synonyms
+let pg;
 let pgClosed;
 let pgOpen;
 let pgStarting;   // added graphic for "Starting camera..."
@@ -96,40 +98,77 @@ let mouthClose = false;
 let mouthOpenTime = 0;
 let mouthCloseTime = 0;
 
+let myRec; // Speech recognition object
+
 function preload() {
   crtTVModel = loadModel('kurty.obj', true);
   
-  // Load array of flower images
+  // Load array of flower images with corresponding names and synonyms
   crtTVImages.push(loadImage('daffodil.jpg'));
+  crtTVNames.push(['daffodil', 'narcissus', 'jonquil']);
+  
   crtTVImages.push(loadImage('daisy.jpg'));
+  crtTVNames.push(['daisy', 'ox-eye', 'bellis']);
+  
   crtTVImages.push(loadImage('forgetmenot.jpg'));
+  crtTVNames.push(['forget me not', 'myosotis', 'mouse ear']);
+  
   crtTVImages.push(loadImage('hibiscus.jpg'));
+  crtTVNames.push(['hibiscus', 'rose of sharon', 'rosemallow']);
+  
   crtTVImages.push(loadImage('iris.jpg'));
+  crtTVNames.push(['iris', 'flag iris', 'sword lily']);
+  
   crtTVImages.push(loadImage('jasmine.jpg'));
+  crtTVNames.push(['jasmine', 'jessamine', 'carolina jasmine']);
+  
   crtTVImages.push(loadImage('lavander.jpg'));
+  crtTVNames.push(['lavender', 'lavandula', 'purple sage']);
+  
   crtTVImages.push(loadImage('lilyofthevalley.jpg'));
+  crtTVNames.push(['lily of the valley', 'convallaria', 'may lily']);
+  
   crtTVImages.push(loadImage('lotus.jpg'));
+  crtTVNames.push(['lotus', 'water lily', 'sacred lotus']);
+  
   crtTVImages.push(loadImage('morningglory.jpg'));
+  crtTVNames.push(['morning glory', 'ipomoea', 'bindweed']);
+  
   crtTVImages.push(loadImage('orchid.jpg'));
+  crtTVNames.push(['orchid', 'orchidaceae', 'phalaenopsis']);
+  
   crtTVImages.push(loadImage('peony.jpg'));
+  crtTVNames.push(['peony', 'paeonia', 'pioney']);
+  
   crtTVImages.push(loadImage('poppy.jpg'));
+  crtTVNames.push(['poppy', 'papaver', 'corn poppy']);
+  
   crtTVImages.push(loadImage('rose.jpg'));
+  crtTVNames.push(['rose', 'rosa', 'queen of flowers']);
+  
   crtTVImages.push(loadImage('sunflower.jpg'));
+  crtTVNames.push(['sunflower', 'helianthus', 'sun disk']);
+  
   crtTVImages.push(loadImage('tulip.jpg'));
+  crtTVNames.push(['tulip', 'tulipa', 'lady tulip']);
+  
   crtTVImages.push(loadImage('violet.jpg'));
+  crtTVNames.push(['violet', 'viola', 'sweet violet']);
+  
   crtTVImages.push(loadImage('wisteria.jpg'));
+  crtTVNames.push(['wisteria', 'wistaria', 'glycine']);
 
   pgOpen = createGraphics(400, 400); // 2D graphics buffer
   pgOpen.textSize(26);
   pgOpen.fill(0x56, 0x36, 0x5C); // Lilac shadow
   pgOpen.textAlign(CENTER, CENTER);
-  pgOpen.text("Mouth opened", pgOpen.width / 2, pgOpen.height / 2);
+  pgOpen.text("Listening", pgOpen.width / 2, pgOpen.height / 2);
 
   pgClosed = createGraphics(400, 400); // 2D graphics buffer
   pgClosed.textSize(26);
   pgClosed.fill(0x56, 0x36, 0x5C); // Lilac shadow
   pgClosed.textAlign(CENTER, CENTER);
-  pgClosed.text("Mouth closed", pgClosed.width / 2, pgClosed.height / 2);
+  pgClosed.text("Start speaking", pgClosed.width / 2, pgClosed.height / 2);
 
   // New graphics for status texts
   pgStarting = createGraphics(400, 400);
@@ -174,6 +213,9 @@ function setup() {
       faceMesh.detectStart(cam.videoElement, gotFaces);
     });
   });
+
+  myRec = new p5.SpeechRec(); // new P5.SpeechRec object
+  myRec.onResult = showResult; // assign callback function
 }
 
 // ==============================================
@@ -419,8 +461,6 @@ function drawUI() {
   background(220, 173, 237);
 
   push();
-
-  let pg;
   
   // Show status at top of screen
   if (!cam.ready) {
@@ -433,21 +473,31 @@ function drawUI() {
     rotateY(PI);
   } else {
     let nowTime = millis();
-    if (distance3_4 > 2) {
+    if (distance3_4 > 2.5) {
+      if (!mouthOpen) {
+        // Start speech recognition
+        myRec.start();
+        // Update graphic
+        pg = pgOpen;
+      }
       mouthOpen = true;
       mouthOpenTime = nowTime;
       if (mouthClose && (nowTime - mouthCloseTime) > 100) {
         mouthClose = false;
         crtTVIndex = floor(random(crtTVImages.length));
       }
-      pg = pgOpen;
+      //pg = pgOpen;
     } else {
+      if (!mouthOpen && !mouthClose) {
+        // Update graphic
+        pg = pgClosed;
+      }
       mouthClose = true;
       mouthCloseTime = nowTime;
-      if (mouthOpen && (nowTime - mouthOpenTime) > 100) {
-        mouthOpen = false;
-      }
-      pg = pgClosed;
+      //if (mouthOpen && (nowTime - mouthOpenTime) > 100) {
+      //  mouthOpen = false;
+      //}
+      //pg = pgClosed;
     }
 
     // Click and drag to look around the shape
@@ -491,6 +541,14 @@ function drawUI() {
   plane(400, 400); // Draw a plane with the text texture
   
   pop();
+}
+
+function showResult() {
+  if (myRec.resultValue==true) {
+    pg = pgClosed;
+    mouthOpen = false;
+    console.log(myRec.resultString);
+  }
 }
 
 // ==============================================
