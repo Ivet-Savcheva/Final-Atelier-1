@@ -485,7 +485,7 @@ function drawUI() {
       }
       if (mouthClose && (nowTime - mouthCloseTime) > 100) {
         mouthClose = false;
-        crtTVIndex = floor(random(crtTVImages.length));
+        //crtTVIndex = floor(random(crtTVImages.length));
       }
       //pg = pgOpen;
     } else {
@@ -557,6 +557,51 @@ function showResult() {
     // Split resultString by space and special symbols
     let words = myRec.resultString.split(/[ +\-_`'\.\?!]+/);
     console.log(words);
+    
+    // Search for matching flower name in crtTVNames
+    let foundIndex = -1;
+    
+    for (let i = 0; i < crtTVNames.length; i++) {
+      for (let j = 0; j < crtTVNames[i].length; j++) {
+        let nameEntry = crtTVNames[i][j];
+        let nameParts = nameEntry.split(" ");
+        
+        // Check if all name parts are found in words array in order
+        let wordIndex = 0;
+        let allPartsFound = true;
+        
+        for (let part of nameParts) {
+          let partFound = false;
+          for (let k = wordIndex; k < words.length; k++) {
+            if (words[k].toLowerCase() === part.toLowerCase()) {
+              wordIndex = k + 1;
+              partFound = true;
+              break;
+            }
+          }
+          if (!partFound) {
+            allPartsFound = false;
+            break;
+          }
+        }
+        
+        if (allPartsFound) {
+          foundIndex = i;
+          console.log(`Found match: "${nameEntry}" at index ${i}`);
+          break;
+        }
+      }
+      if (foundIndex !== -1) break;
+    }
+    
+    if (foundIndex !== -1) {
+      crtTVIndex = foundIndex;
+      console.log(`Displaying flower at index: ${crtTVIndex}`);
+    } else {
+      console.log("No flower name match found");
+      crtTVIndex = floor(random(crtTVImages.length));
+      console.log(`Displaying random flower at index: ${crtTVIndex}`);
+    }
   }
 }
 
