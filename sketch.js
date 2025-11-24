@@ -214,7 +214,7 @@ function setup() {
     });
   });
 
-  myRec = new p5.SpeechRec(); // new P5.SpeechRec object
+  myRec = new p5.SpeechRec('en-US'); // new P5.SpeechRec object
   myRec.onResult = showResult; // assign callback function
 }
 
@@ -479,9 +479,10 @@ function drawUI() {
         myRec.start();
         // Update graphic
         pg = pgOpen;
+        // Update open mouth state only once
+        mouthOpen = true;
+        mouthOpenTime = nowTime;
       }
-      mouthOpen = true;
-      mouthOpenTime = nowTime;
       if (mouthClose && (nowTime - mouthCloseTime) > 100) {
         mouthClose = false;
         crtTVIndex = floor(random(crtTVImages.length));
@@ -494,9 +495,14 @@ function drawUI() {
       }
       mouthClose = true;
       mouthCloseTime = nowTime;
-      //if (mouthOpen && (nowTime - mouthOpenTime) > 100) {
-      //  mouthOpen = false;
-      //}
+      if (mouthOpen && (nowTime - mouthOpenTime) > 10000) {
+        // Stop speech recognition after 10 seconds of open mouth
+        myRec.stop();
+        // Update graphic
+        pg = pgClosed;
+        // Update open mouth states
+        mouthOpen = false;
+      }
       //pg = pgClosed;
     }
 
@@ -548,6 +554,9 @@ function showResult() {
     pg = pgClosed;
     mouthOpen = false;
     console.log(myRec.resultString);
+    // Split resultString by space and special symbols
+    let words = myRec.resultString.split(/[ +\-_`'\.\?!]+/);
+    console.log(words);
   }
 }
 
