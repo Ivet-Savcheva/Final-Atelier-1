@@ -214,6 +214,11 @@ function setup() {
     });
   });
 
+      
+  // Enable speech recognition permission
+  // This activates the audio context without creating p5.AudioIn
+  enableSpeechTap('Tap to enable speech recognition');
+
   // Initialize speech recognition
   myRec = new p5.SpeechRec('en-US');
   myRec.continuous = false; // do not listening continuously
