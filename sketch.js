@@ -214,8 +214,15 @@ function setup() {
     });
   });
 
-  myRec = new p5.SpeechRec('en-US'); // new P5.SpeechRec object
-  myRec.onResult = showResult; // assign callback function
+  // Initialize speech recognition
+  myRec = new p5.SpeechRec('en-US');
+  myRec.continuous = false; // do not listening continuously
+  myRec.interimResults = false;
+  myRec.onResult = showResult;
+  //myRec.onEnd = function() {
+  //  console.log("Recognition ended");
+  //};
+  console.log('✅ Speech recognition ready');
 }
 
 // ==============================================
