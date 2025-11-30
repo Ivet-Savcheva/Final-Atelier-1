@@ -80,7 +80,6 @@ let distance1_2 = 0;  // Distance between eyes
 let angle1_2 = 0;     // Angle between eyes
 let distance3_4 = 0;  // Distance between lips
 let angle3_4 = 0;     // Angle between lips
-let angle5_0 = 0;     // Angle of nose and imaginare center point
 let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 
 let crtTVModel;
@@ -97,6 +96,7 @@ let mouthOpen = false;
 let mouthClose = false;
 let mouthOpenTime = 0;
 let mouthCloseTime = 0;
+let velocityYTime = 0;
 
 let myRec; // Speech recognition object
 
@@ -190,7 +190,7 @@ function preload() {
 function setup() {
   // Create portrait canvas (typical phone proportions: 9:16)
   createCanvas(405, 720, WEBGL);
-  lockGestures;  // Prevent phone gestures (zoom, refresh)
+  lockGestures();  // Prevent phone gestures (zoom, refresh)
   
   // Create camera: front camera, mirrored, fit to canvas height
   cam = createPhoneCamera('user', true, 'fitHeight');
@@ -258,8 +258,7 @@ function draw() {
     angle1_2 = measureAngle(facePointData1, facePointData2);
     distance3_4 = measureDistance(facePointData3, facePointData4);
     angle3_4 = measureAngle(facePointData3, facePointData4);
-    angle5_0 = measureAngle(facePointData5, facePointData0);
-    //velocity5 = measureVelocity(facePointData5, facePointData5Prev);
+    velocity5 = measureVelocity(facePointData5, facePointData5Prev);
     
     // Eyes: Check if both points are valid and display
     if (facePointData1 && facePointData2) {
@@ -271,14 +270,14 @@ function draw() {
     // Lips: Check if both points are valid and display
     if (facePointData3 && facePointData4) {
       // Show the points in different colors
-      showPoint(facePointData3, color(0, 255, 0));  // Green
-      showPoint(facePointData4, color(255, 0, 255));  // Magenta
+      //showPoint(facePointData3, color(0, 255, 0));  // Green
+      //showPoint(facePointData4, color(255, 0, 255));  // Magenta
     }
     
     // Nose: Check if point is valid and display
     if (facePointData5) {
       // Show the nose point in yellow
-      showPoint(facePointData5, color(255, 255, 0));  // Yellow
+      //showPoint(facePointData5, color(255, 255, 0));  // Yellow
     }
   }
   
@@ -485,6 +484,7 @@ function drawUI() {
     rotateY(PI);
   } else {
     let nowTime = millis();
+    
     if (distance3_4 > 2.5) {
       if (!mouthOpen) {
         // Start speech recognition
@@ -518,16 +518,22 @@ function drawUI() {
       //pg = pgClosed;
     }
 
+    if (abs(velocity5.y) > 10 && (nowTime - velocityYTime) > 500) {
+      velocityYTime = nowTime;
+      if (velocity5.y > 0) {
+        crtTVIndex = (crtTVIndex + 1) % crtTVImages.length;
+      } else {
+        crtTVIndex = (crtTVIndex - 1 + crtTVImages.length) % crtTVImages.length;
+      }
+    }
+
     // Click and drag to look around the shape
     orbitControl();
-
-    angleLat = angle1_2 * PI/180;
-    angleLon = angle5_0 * PI/180;
    
     // Convert polar coordinates to rotation angles
-    let rotY = -sin(angleLat) * PI;
-    let rotX = cos(angleLon) * PI;
-    let rotZ = atan2(sin(angleLon), cos(angleLat));
+    let rotY = PI/2 + (angle1_2 * PI/180);
+    let rotX = 0;
+    let rotZ = PI;
 
     // This adds color to the model according to the angle of the surface
     normalMaterial();
@@ -535,10 +541,10 @@ function drawUI() {
     noStroke();
     specularMaterial(50);
     shininess(100);
-    rotateX(-PI / 1.8 - rotX);
-    rotateY(-PI / 2 + rotY);
+    rotateX(rotX);
+    rotateY(rotY);
     rotateZ(rotZ);
-    scale(1.5);
+    scale(1.7);
     model(crtTVModel);
 
     texture(crtTVImages[crtTVIndex]);
