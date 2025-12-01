@@ -91,8 +91,9 @@ let crtTVGraphics = [];
 let pg;
 let pgClosed;
 let pgOpen;
-let pgStarting;   // added graphic for "Starting camera..."
-let pgShowFace;   // added graphic for "Show your face to start tracking"
+let pgStarting; // added graphic for "Starting camera..."
+let pgShowFace; // added graphic for "Show your face to start tracking"
+let pgMissHear; // added graphic for "Did not catch that..."
 
 let mouthOpen = false;
 let mouthClose = false;
@@ -184,6 +185,12 @@ function preload() {
   pgShowFace.fill(0x56, 0x36, 0x5C);
   pgShowFace.textAlign(CENTER, CENTER);
   pgShowFace.text("Show your face\nto start tracking.", pgShowFace.width / 2, pgShowFace.height / 2);
+
+  pgMissHear = createGraphics(400, 400);
+  pgMissHear.textSize(16);
+  pgMissHear.fill(0x56, 0x36, 0x5C);
+  pgMissHear.textAlign(CENTER, CENTER);
+  pgMissHear.text("Did not catch that.\nShowing a random flower.", pgMissHear.width / 2, pgMissHear.height / 2);
 
   // Create array of graphics for each flower
   for (let i = 0; i < crtTVNames.length; i++) {
@@ -482,7 +489,7 @@ function isValidPoint(point) {
 // UI - Display status and instructions
 // ==============================================
 function drawUI() {
-  background(220, 173, 237);
+  background(153, 252, 146);
 
   push();
   
@@ -523,7 +530,7 @@ function drawUI() {
         // Stop speech recognition after 10 seconds of open mouth
         myRec.stop();
         // Update graphic
-        pg = pgClosed;
+        pg = pgMissHear;
         // Update open mouth states
         mouthOpen = false;
 
@@ -542,7 +549,7 @@ function drawUI() {
       }
     }
 
-    if (abs(velocity5.y) > 10 && (nowTime - velocityYTime) > 500) {
+    if (!mouthOpen && abs(velocity5.y) > 10 && (nowTime - velocityYTime) > 500) {
       velocityYTime = nowTime;
       if (velocity5.y > 0) {
         crtTVIndex = (crtTVIndex + 1) % crtTVImages.length;
@@ -598,8 +605,6 @@ function drawUI() {
 
 function showResult() {
   if (myRec.resultValue==true) {
-    pg = pgClosed;
-    mouthOpen = false;
     console.log(myRec.resultString);
     // Split resultString by space and special symbols
     let words = myRec.resultString.split(/[ +\-_`'\.\?!]+/);
@@ -641,10 +646,15 @@ function showResult() {
       if (foundIndex !== -1) break;
     }
     
+    mouthOpen = false;
+    mouthClose = true;
+    mouthCloseTime = millis();
     if (foundIndex !== -1) {
+      pg = pgClosed;
       crtTVIndex = foundIndex;
       console.log(`Displaying flower at index: ${crtTVIndex}`);
     } else {
+      pg = pgMissHear;
       console.log("No flower name match found");
       crtTVIndex = floor(random(crtTVImages.length));
       console.log(`Displaying random flower at index: ${crtTVIndex}`);
