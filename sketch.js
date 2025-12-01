@@ -505,7 +505,7 @@ function drawUI() {
   } else {
     let nowTime = millis();
     
-    if (distance3_4 > 2) {
+    if (distance3_4 > 3) {
       if (!mouthOpen && (nowTime - mouthCloseTime) > 500) {
         // Start speech recognition
         myRec.start();
@@ -541,7 +541,7 @@ function drawUI() {
       //pg = pgClosed;
     }
 
-    if (pg === pgShowFace) {
+    if (pg === pgShowFace || (pg === pgMissHear && (nowTime - mouthOpenTime) > 10000)) {
       if (mouthOpen) {
         pg = pgOpen;
       } else {
@@ -555,10 +555,6 @@ function drawUI() {
         crtTVIndex = (crtTVIndex + 1) % crtTVImages.length;
       } else {
         crtTVIndex = (crtTVIndex - 1 + crtTVImages.length) % crtTVImages.length;
-      }
-
-      if (pg !== pgClosed) {
-        pg = pgClosed;
       }
     }
 
