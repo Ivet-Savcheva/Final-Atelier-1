@@ -556,6 +556,10 @@ function drawUI() {
       } else {
         crtTVIndex = (crtTVIndex - 1 + crtTVImages.length) % crtTVImages.length;
       }
+
+      if (pg !== pgClosed) {
+        pg = pgClosed;
+      }
     }
 
     // Click and drag to look around the shape
