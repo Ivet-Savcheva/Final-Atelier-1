@@ -86,6 +86,8 @@ let crtTVModel;
 let crtTVIndex = 0;
 let crtTVImages = [];
 let crtTVNames = [];  // New array for flower names and synonyms
+let crtTVGraphics = [];
+
 let pg;
 let pgClosed;
 let pgOpen;
@@ -159,16 +161,16 @@ function preload() {
   crtTVNames.push(['wisteria', 'wistaria', 'glycine']);
 
   pgOpen = createGraphics(400, 400); // 2D graphics buffer
-  pgOpen.textSize(26);
+  pgOpen.textSize(16);
   pgOpen.fill(0x56, 0x36, 0x5C); // Lilac shadow
   pgOpen.textAlign(CENTER, CENTER);
-  pgOpen.text("Listening", pgOpen.width / 2, pgOpen.height / 2);
+  pgOpen.text("Listening! Tell me\na flower you want to see.", pgOpen.width / 2, pgOpen.height / 2);
 
   pgClosed = createGraphics(400, 400); // 2D graphics buffer
-  pgClosed.textSize(26);
+  pgClosed.textSize(16);
   pgClosed.fill(0x56, 0x36, 0x5C); // Lilac shadow
   pgClosed.textAlign(CENTER, CENTER);
-  pgClosed.text("Start speaking", pgClosed.width / 2, pgClosed.height / 2);
+  pgClosed.text("Open mouth to\nactivate voice recognition.", pgClosed.width / 2, pgClosed.height / 2);
 
   // New graphics for status texts
   pgStarting = createGraphics(400, 400);
@@ -178,10 +180,21 @@ function preload() {
   pgStarting.text("Starting camera...", pgStarting.width / 2, pgStarting.height / 2);
 
   pgShowFace = createGraphics(400, 400);
-  pgShowFace.textSize(22);
+  pgShowFace.textSize(26);
   pgShowFace.fill(0x56, 0x36, 0x5C);
   pgShowFace.textAlign(CENTER, CENTER);
-  pgShowFace.text("Show your face to start tracking", pgShowFace.width / 2, pgShowFace.height / 2);
+  pgShowFace.text("Show your face\nto start tracking.", pgShowFace.width / 2, pgShowFace.height / 2);
+
+  // Create array of graphics for each flower
+  for (let i = 0; i < crtTVNames.length; i++) {
+    let pg = createGraphics(400, 400);
+    pg.textSize(22);
+    pg.fill(0x56, 0x36, 0x5C);
+    pg.textAlign(CENTER, CENTER);
+    let flowerName = crtTVNames[i][0]; // First element of each flower entry
+    pg.text("Showing you\n" + flowerName + ".", pg.width / 2, pg.height / 2);
+    crtTVGraphics.push(pg);
+  }
 }
 
 // ==============================================
@@ -485,8 +498,8 @@ function drawUI() {
   } else {
     let nowTime = millis();
     
-    if (distance3_4 > 2.5) {
-      if (!mouthOpen) {
+    if (distance3_4 > 2) {
+      if (!mouthOpen && (nowTime - mouthCloseTime) > 500) {
         // Start speech recognition
         myRec.start();
         // Update graphic
@@ -495,9 +508,8 @@ function drawUI() {
         mouthOpen = true;
         mouthOpenTime = nowTime;
       }
-      if (mouthClose && (nowTime - mouthCloseTime) > 100) {
+      if (mouthClose && (nowTime - mouthCloseTime) > 500) {
         mouthClose = false;
-        //crtTVIndex = floor(random(crtTVImages.length));
       }
       //pg = pgOpen;
     } else {
@@ -514,8 +526,20 @@ function drawUI() {
         pg = pgClosed;
         // Update open mouth states
         mouthOpen = false;
+
+        console.log("No flower name match found");
+        crtTVIndex = floor(random(crtTVImages.length));
+        console.log(`Displaying random flower at index: ${crtTVIndex}`);
       }
       //pg = pgClosed;
+    }
+
+    if (pg === pgShowFace) {
+      if (mouthOpen) {
+        pg = pgOpen;
+      } else {
+        pg = pgClosed;
+      }
     }
 
     if (abs(velocity5.y) > 10 && (nowTime - velocityYTime) > 500) {
@@ -563,6 +587,11 @@ function drawUI() {
   rotateX(PI);
   translate(0, 150, 0); // Move the plane forward
   plane(400, 400); // Draw a plane with the text texture
+
+  texture(crtTVGraphics[crtTVIndex]); // Use the flower graphic as a texture
+  //rotateX(PI);
+  translate(0, -280, 0); // Move the plane backward
+  plane(400, 400); // Draw a plane with the flower graphic
   
   pop();
 }
