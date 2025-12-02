@@ -85,6 +85,9 @@ let velocity5 = { x: 0, y: 0, speed: 0 }; // Nose velocity
 let crtTVModel;
 let crtTVIndex = 0;
 let crtTVImages = [];
+let crtTVImagesR = [];
+let crtTVImagesG = [];
+let crtTVImagesB = [];
 let crtTVNames = [];  // New array for flower names and synonyms
 let crtTVGraphics = [];
 
@@ -108,57 +111,111 @@ function preload() {
   
   // Load array of flower images with corresponding names and synonyms
   crtTVImages.push(loadImage('daffodil.jpg'));
+  crtTVImagesR.push(loadImage('daffodilr.jpg'));
+  crtTVImagesG.push(loadImage('daffodilg.jpg'));
+  crtTVImagesB.push(loadImage('daffodilb.jpg'));
   crtTVNames.push(['daffodil', 'narcissus', 'jonquil']);
   
   crtTVImages.push(loadImage('daisy.jpg'));
+  crtTVImagesR.push(loadImage('daisyr.png'));
+  crtTVImagesG.push(loadImage('daisyg.png'));
+  crtTVImagesB.push(loadImage('daisyb.png'));
   crtTVNames.push(['daisy', 'ox-eye', 'bellis']);
   
   crtTVImages.push(loadImage('forgetmenot.jpg'));
+  crtTVImagesR.push(loadImage('forgetmenotr.jpg'));
+  crtTVImagesG.push(loadImage('forgetmenotg.jpg'));
+  crtTVImagesB.push(loadImage('forgetmenotb.jpg'));
   crtTVNames.push(['forget me not', 'myosotis', 'mouse ear']);
   
   crtTVImages.push(loadImage('hibiscus.jpg'));
+  crtTVImagesR.push(loadImage('hibiscusr.jpg'));
+  crtTVImagesG.push(loadImage('hibiscusg.jpg'));
+  crtTVImagesB.push(loadImage('hibiscusb.jpg'));
   crtTVNames.push(['hibiscus', 'rose of sharon', 'rosemallow']);
   
   crtTVImages.push(loadImage('iris.jpg'));
+  crtTVImagesR.push(loadImage('irisr.jpg'));
+  crtTVImagesG.push(loadImage('irisg.jpg'));
+  crtTVImagesB.push(loadImage('irisb.jpg'));
   crtTVNames.push(['iris', 'flag iris', 'sword lily']);
   
   crtTVImages.push(loadImage('jasmine.jpg'));
+  crtTVImagesR.push(loadImage('jasminer.jpg'));
+  crtTVImagesG.push(loadImage('jasmineg.jpg'));
+  crtTVImagesB.push(loadImage('jasmineb.jpg'));
   crtTVNames.push(['jasmine', 'jessamine', 'carolina jasmine']);
   
   crtTVImages.push(loadImage('lavander.jpg'));
+  crtTVImagesR.push(loadImage('lavanderr.jpg'));
+  crtTVImagesG.push(loadImage('lavanderg.jpg'));
+  crtTVImagesB.push(loadImage('lavanderb.jpg'));
   crtTVNames.push(['lavender', 'lavandula', 'purple sage']);
   
   crtTVImages.push(loadImage('lilyofthevalley.jpg'));
+  crtTVImagesR.push(loadImage('lilyofthevalleyr.jpg'));
+  crtTVImagesG.push(loadImage('lilyofthevalleyg.jpg'));
+  crtTVImagesB.push(loadImage('lilyofthevalleyb.jpg'));
   crtTVNames.push(['lily of the valley', 'convallaria', 'may lily']);
   
   crtTVImages.push(loadImage('lotus.jpg'));
+  crtTVImagesR.push(loadImage('lotusr.jpg'));
+  crtTVImagesG.push(loadImage('lotusg.jpg'));
+  crtTVImagesB.push(loadImage('lotusb.jpg'));
   crtTVNames.push(['lotus', 'water lily', 'sacred lotus']);
   
   crtTVImages.push(loadImage('morningglory.jpg'));
+  crtTVImagesR.push(loadImage('morninggloryR.jpg'));
+  crtTVImagesG.push(loadImage('morninggloryG.jpg'));
+  crtTVImagesB.push(loadImage('morninggloryB.jpg'));
   crtTVNames.push(['morning glory', 'ipomoea', 'bindweed']);
   
   crtTVImages.push(loadImage('orchid.jpg'));
+  crtTVImagesR.push(loadImage('orchidr.jpg'));
+  crtTVImagesG.push(loadImage('orchidg.jpg'));
+  crtTVImagesB.push(loadImage('orchidb.jpg'));
   crtTVNames.push(['orchid', 'orchidaceae', 'phalaenopsis']);
   
   crtTVImages.push(loadImage('peony.jpg'));
+  crtTVImagesR.push(loadImage('peonyr.jpg'));
+  crtTVImagesG.push(loadImage('peonyg.jpg'));
+  crtTVImagesB.push(loadImage('peonyb.jpg'));
   crtTVNames.push(['peony', 'paeonia', 'pioney']);
   
   crtTVImages.push(loadImage('poppy.jpg'));
+  crtTVImagesR.push(loadImage('poppyr.jpg'));
+  crtTVImagesG.push(loadImage('poppyg.jpg'));
+  crtTVImagesB.push(loadImage('poppyb.jpg'));
   crtTVNames.push(['poppy', 'papaver', 'corn poppy']);
   
   crtTVImages.push(loadImage('rose.jpg'));
+  crtTVImagesR.push(loadImage('roser.jpg'));
+  crtTVImagesG.push(loadImage('roseg.jpg'));
+  crtTVImagesB.push(loadImage('roseb.jpg'));
   crtTVNames.push(['rose', 'rosa', 'queen of flowers']);
   
   crtTVImages.push(loadImage('sunflower.jpg'));
+  crtTVImagesR.push(loadImage('sunflowerr.jpg'));
+  crtTVImagesG.push(loadImage('sunflowerg.jpg'));
+  crtTVImagesB.push(loadImage('sunflowerb.jpg'));
   crtTVNames.push(['sunflower', 'helianthus', 'sun disk']);
   
   crtTVImages.push(loadImage('tulip.jpg'));
+  crtTVImagesR.push(loadImage('tulipr.jpg'));
+  crtTVImagesG.push(loadImage('tulipg.jpg'));
+  crtTVImagesB.push(loadImage('tulipb.jpg'));
   crtTVNames.push(['tulip', 'tulipa', 'lady tulip']);
   
   crtTVImages.push(loadImage('violet.jpg'));
+  crtTVImagesR.push(loadImage('violetr.jpg'));
+  crtTVImagesG.push(loadImage('violetg.jpg'));
+  crtTVImagesB.push(loadImage('violetb.jpg'));
   crtTVNames.push(['violet', 'viola', 'sweet violet']);
   
   crtTVImages.push(loadImage('wisteria.jpg'));
+  crtTVImagesR.push(loadImage('wisteriar.jpg'));
+  crtTVImagesG.push(loadImage('wisteriag.jpg'));
+  crtTVImagesB.push(loadImage('wisteriab.jpg'));
   crtTVNames.push(['wisteria', 'wistaria', 'glycine']);
 
   pgOpen = createGraphics(400, 400); // 2D graphics buffer
@@ -584,6 +641,32 @@ function drawUI() {
     rotateY(PI / 2);
     translate(0, 4, -63); // Position the sprite
     plane(160, 130); // Width and height of the sprite
+
+    let offset = map(angle1_2, 130, 230, -10, 10);
+
+    // Draw second overlapping image with 50% opacity
+    push();
+    translate(offset, offset, 0); // Offset by 5 pixels in both directions
+    tint(255, 64); // 50% opacity
+    texture(crtTVImagesR[crtTVIndex]);
+    plane(160, 130); // Same dimensions as first plane
+    pop();
+
+    // Draw second overlapping image with 50% opacity
+    push();
+    translate(-offset, offset, 0); // Offset by 5 pixels in both directions
+    tint(255, 64); // 50% opacity
+    texture(crtTVImagesG[crtTVIndex]);
+    plane(160, 130); // Same dimensions as first plane
+    pop();
+
+    // Draw second overlapping image with 50% opacity
+    push();
+    translate(offset, -offset, 0); // Offset by 5 pixels in both directions
+    tint(255, 64); // 50% opacity
+    texture(crtTVImagesB[crtTVIndex]);
+    plane(160, 130); // Same dimensions as first plane
+    pop();
   }
   
   // Instructions at bottom
