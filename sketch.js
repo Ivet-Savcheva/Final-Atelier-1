@@ -635,6 +635,7 @@ function drawUI() {
     scale(1.7);
     model(crtTVModel);
 
+    tint(255, 128); // 50% opacity
     texture(crtTVImages[crtTVIndex]);
 
     rotateZ(-2 * PI / 180);
@@ -647,7 +648,7 @@ function drawUI() {
     // Draw second overlapping image with 50% opacity
     push();
     translate(offset, offset, 0); // Offset by 5 pixels in both directions
-    tint(255, 64); // 50% opacity
+    tint(255, 128); // 50% opacity
     texture(crtTVImagesR[crtTVIndex]);
     plane(160, 130); // Same dimensions as first plane
     pop();
@@ -655,7 +656,7 @@ function drawUI() {
     // Draw second overlapping image with 50% opacity
     push();
     translate(-offset, offset, 0); // Offset by 5 pixels in both directions
-    tint(255, 64); // 50% opacity
+    tint(255, 128); // 50% opacity
     texture(crtTVImagesG[crtTVIndex]);
     plane(160, 130); // Same dimensions as first plane
     pop();
@@ -663,7 +664,7 @@ function drawUI() {
     // Draw second overlapping image with 50% opacity
     push();
     translate(offset, -offset, 0); // Offset by 5 pixels in both directions
-    tint(255, 64); // 50% opacity
+    tint(255, 128); // 50% opacity
     texture(crtTVImagesB[crtTVIndex]);
     plane(160, 130); // Same dimensions as first plane
     pop();
