@@ -165,9 +165,9 @@ function preload() {
   crtTVNames.push(['lotus', 'water lily', 'sacred lotus']);
   
   crtTVImages.push(loadImage('morningglory.jpg'));
-  crtTVImagesR.push(loadImage('morninggloryR.jpg'));
-  crtTVImagesG.push(loadImage('morninggloryG.jpg'));
-  crtTVImagesB.push(loadImage('morninggloryB.jpg'));
+  crtTVImagesR.push(loadImage('morninggloryr.jpg'));
+  crtTVImagesG.push(loadImage('morninggloryg.jpg'));
+  crtTVImagesB.push(loadImage('morninggloryb.jpg'));
   crtTVNames.push(['morning glory', 'ipomoea', 'bindweed']);
   
   crtTVImages.push(loadImage('orchid.jpg'));
